@@ -233,7 +233,7 @@ def train(args: argparse.Namespace):
                 platform.hvd.broadcast_parameters(net.state_dict(), root_rank=platform.master_rank)
 
             # cycle over batches of training data (one loop for each epoch)
-            for batch_id, (x, ygt) in enumerate(train_loader):
+            for batch_id, batch in enumerate(train_loader):
                 # master-workers synchronisation point: quantization controllers might change the network's quantization parameters stochastically
                 # TODO: in multi-process runs, synchronising processes at each step might be too costly
                 if (not platform.is_horovod_run) or platform.is_master:
@@ -248,10 +248,13 @@ def train(args: argparse.Namespace):
                 train_meter.tic()
 
                 # processing (forward pass)
-                x   = x.to(platform.device)
-                ypr = net(x)
+                # x   = x.to(platform.device)
+                # x = [{k: v.to(platform.device) for k, v in p.items()} for p in x]
+                x = {k: v.to(platform.device) for k, v in batch.items()}
+                ypr = net(**x)
 
                 # loss evaluation
+                ygt = batch['labels']
                 ygt  = ygt.to(platform.device)
                 loss = loss_fn(ypr, ygt)
 
@@ -283,7 +286,8 @@ def train(args: argparse.Namespace):
             with torch.no_grad():  # no optimisation happens at validation time
 
                 # cycle over batches of validation data (one loop for each epoch)
-                for batch_id, (x, ygt) in enumerate(valid_loader):
+                # for batch_id, (x, ygt) in enumerate(valid_loader):
+                for batch_id, batch in enumerate(valid_loader):
 
                     # event: forward pass is beginning
                     valid_meter.step(epoch_id, batch_id)
@@ -291,10 +295,12 @@ def train(args: argparse.Namespace):
                     valid_meter.tic()
 
                     # processing (forward pass)
-                    x   = x.to(platform.device)
-                    ypr = net(x)
+                    # x   = x.to(platform.device)
+                    x = {k: v.to(platform.device) for k, v in batch.items()}
+                    ypr = net(**x)
 
                     # loss evaluation
+                    ygt =  batch['labels']
                     ygt = ygt.to(platform.device)
                     loss = loss_fn(ypr, ygt)
 

@@ -108,17 +108,19 @@ def test(args):
 
     with torch.no_grad():
 
-        for batch_id, (x, ygt) in enumerate(test_loader):
+        for batch_id, batch in enumerate(test_loader):
 
             test_meter.step(logbook.epoch_id, batch_id)
             test_meter.start_observing()
             test_meter.tic()
 
             # processing (forward pass)
-            x = x.to(platform.device)
-            ypr = net(x)
+            x = {k: v.to(platform.device) for k, v in batch.items()}
+            # x = x.to(platform.device)
+            ypr = net(**x)
 
             # loss evaluation
+            ygt = batch['labels']
             ygt = ygt.to(platform.device)
             loss = loss_fn(ypr, ygt)
 

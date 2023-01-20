@@ -50,6 +50,7 @@
             "options": [
                 "CIFAR10",
                 "DVS128",
+                "GLUE",
                 "ILSVRC12",
                 "MNIST"
               ],
@@ -63,6 +64,7 @@
                 "ResNet",
                 "VGG",
                 "dvs_cnn",
+                "iBert",
                 "AlexNet",
                 "MobileNetV1",
                 "MobileNetV2",
