@@ -378,6 +378,7 @@ def validate(net: nn.Module,
         n_correct += (yn.to('cpu').argmax(dim=1) == yb).sum()
         if ((i + 1) % 10 == 0):
             print(f'Accuracy after {i+1} batches: {n_correct/n_tot}')
+        del yn
 
     print(f'Final accuracy: {n_correct/n_tot}')
     net.to('cpu')
