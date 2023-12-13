@@ -1,23 +1,23 @@
-# 
+#
 # export_net.py
-# 
+#
 # Author(s):
 # Philip Wiese <wiesep@student.ethz.ch>
-# 
+#
 # Copyright (c) 2023 ETH Zurich.
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 # http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# 
+#
 
 import torch
 import argparse
@@ -33,7 +33,7 @@ _QL_ROOTPATH = Path(__file__).absolute().parent.parent.parent.parent
 
 sys.path.append(str(_QL_ROOTPATH))
 
-# Import the get_dataset functions for CIFAR10 
+# Import the get_dataset functions for CIFAR10
 from systems.CIFAR10.utils.data import load_data_set as load_cifar10
 
 # Import the networks
@@ -50,15 +50,17 @@ from dataclasses import dataclass
 class OptimizationConfig:
     enable_gelu: bool = True
     enable_layer_norm: bool = True
-    enable_attention: bool = True
-    enable_skip_layer_norm: bool = True
-    enable_embed_layer_norm: bool = True
-    enable_bias_skip_layer_norm: bool = True
-    enable_bias_gelu: bool = True
+    enable_attention: bool = False
+    enable_skip_layer_norm: bool = False
+    enable_embed_layer_norm: bool = False
+    enable_bias_skip_layer_norm: bool = False
+    enable_bias_gelu: bool = False
     enable_gelu_approximation: bool = False
-    enable_qordered_matmul: bool = True
+    enable_qordered_matmul: bool = False
     enable_shape_inference: bool = True
     attention_mask_format: int = 3
+    use_multi_head_attention: bool = False
+    enable_gemm_fast_gelu: bool = False
 
 def export_onnx_cct(args):
     if args.exp_id != None:
@@ -112,7 +114,7 @@ def export_onnx_cct(args):
 
     # Optimize the model
     optimization_config = OptimizationConfig(
-        enable_skip_layer_norm=False, 
+        enable_skip_layer_norm=False,
         enable_bias_gelu=False,
     )
     optimizer =  optimize_model(str(onnx_path), optimization_options=optimization_config)
@@ -131,7 +133,7 @@ def export_onnx_cct(args):
     result2 = model.forward(in_data).detach().numpy()
     print("Results are the same:", np.allclose(result1,result2, atol=1e-6))
     print(" => Abs Diff:", np.max(np.abs(result2-result1)))
-    
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='ViT ONNX Export')
