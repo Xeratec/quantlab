@@ -134,7 +134,7 @@ class MultiHeadAttention(nn.Module):
             self.WV = nn.Linear(dim, self.inner_dim, bias = bias)
 
         self.attention = AttentionMechanism(*args, **kwargs)
-        self.out = nn.Linear(self.inner_dim, self.out_dim, bias = bias)
+        self.out = nn.ModuleList([nn.Linear(self.dim, self.out_dim, bias = bias) for _ in range(self.h)])
 
     def forward(self, q, k, v):
         mask = None
@@ -154,9 +154,10 @@ class MultiHeadAttention(nn.Module):
         v = torch.transpose(v, 1, 2)
 
         scores = self.attention(q, k, v, self.dim, mask, None)
-        concat = scores.transpose(1, 2).contiguous().view(scores.shape[0], -1, self.inner_dim)
+        out = [self.out[i](scores[:, i, :, :]) for i in range(self.h)]
+        sum = torch.sum(torch.stack(out), dim = 0)
 
-        return self.out(concat)
+        return sum
 
 
 class Attention(nn.Module):
