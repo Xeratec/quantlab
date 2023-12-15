@@ -1,5 +1,5 @@
 {
-    "description": "TQT 8-Bit Version of Tiny-ICCT (1-8-92-128)",
+    "description": "TQT 8-Bit Version of Tiny-ICCT (1-8-92-128) (ITA compatible MHSA)",
     "data": {
         "train": {
             "dataset": {
@@ -63,7 +63,7 @@
                         ".*mhsa.WQ$": {},
                         ".*mhsa.WK$": {},
                         ".*mhsa.WV$": {},
-                        ".*mhsa.out$": {},
+                        ".*mhsa.out.*$": {},
                         "transformer.layers.*.*.fn.ff.0$": {},
                         "transformer.layers.*.*.fn.ff.3$": {},
                         "classifier.0$": {},

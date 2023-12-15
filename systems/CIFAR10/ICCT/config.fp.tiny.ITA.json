@@ -1,5 +1,5 @@
 {
-    "description": "Floating Point Version of Tiny-ICCT (1-8-92-128)",
+    "description": "Floating Point Version of Tiny-ICCT (1-8-92-128) (ITA compatible MHSA)",
     "data": {
         "train": {
             "dataset": {
@@ -74,7 +74,7 @@
                         "n_inputs": 4,
                         "preprocessing_type": 1
                     }
-                    
+
                 },
                 {
                     "class": "OutputFeaturesSnapshot",
@@ -84,7 +84,7 @@
                         "period": 98,
                         "n_inputs": 4
                     }
-                    
+
                 }
             ]
         },

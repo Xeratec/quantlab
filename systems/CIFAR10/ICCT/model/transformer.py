@@ -154,8 +154,9 @@ class MultiHeadAttention(nn.Module):
         v = torch.transpose(v, 1, 2)
 
         scores = self.attention(q, k, v, self.dim, mask, None)
-        out = [self.out[i](scores[:, i, :, :]) for i in range(self.h)]
-        sum = torch.sum(torch.stack(out), dim = 0)
+        for i in range(self.h):
+            out = self.out[i](scores[:, i, :, :])
+            sum = out if i == 0 else sum + out
 
         return sum
 
