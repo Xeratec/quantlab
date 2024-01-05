@@ -1,5 +1,5 @@
 {
-    "description": "Floating Point Version of Tiny-ICCT (1-8-92-128) (ITA compatible MHSA)",
+    "description": "Floating Point Version of Tiny-ICCT (1-8-128-192) (ITA compatible MHSA)",
     "data": {
         "train": {
             "dataset": {
@@ -33,8 +33,8 @@
         "kwargs": {
             "num_layers": 1,
             "num_heads": 8,
-            "embedding_dim": 92,
-            "projection_dim": 128,
+            "embedding_dim": 128,
+            "projection_dim": 192,
             "pool": "mean",
             "attention_bias": false
         }
