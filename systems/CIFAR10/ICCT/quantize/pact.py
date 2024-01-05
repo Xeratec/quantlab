@@ -26,6 +26,7 @@ import quantlib.editing.lightweight.rules as qlr
 import quantlib.editing.fx.passes.pact as passes
 
 from quantlib.editing.fx.passes import SequentialPass
+from quantlib.editing.fx.passes.pact import PACT_symbolic_trace
 from quantlib.editing.fx.passes.pact import PACTInclusiveTracer, PACT_symbolic_trace, PACT_OPS, PACT_OPS_INCLUSIVE
 from quantlib.editing.lightweight.rules.filters import NameFilter
 
@@ -125,6 +126,11 @@ def pact_recipe(net: nn.Module, config: dict) -> fx.GraphModule:
         print("    {:30s} {}".format(lwn.name, lwn.type_))
     print()
 
+    print("[QuantLab] === Original PyTorch Network ===")
+    gm = PACT_symbolic_trace(net)
+    print(gm.modules)
+    gm.graph.print_tabular()
+
     lwe.startup()
     for rho in rhos:
         lwe.set_lwr(rho)
@@ -142,6 +148,11 @@ def pact_recipe(net: nn.Module, config: dict) -> fx.GraphModule:
     for lwn in nodelist:
         print("    {:30s} {}".format(lwn.name, lwn.type_))
     print()
+
+    print("[QuantLab] === PACT PyTorch Network ===")
+    gm = PACT_symbolic_trace(net)
+    print(gm.modules)
+    gm.graph.print_tabular()
 
     return net
 
