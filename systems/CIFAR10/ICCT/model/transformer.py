@@ -136,6 +136,8 @@ class MultiHeadAttention(nn.Module):
         self.attention = AttentionMechanism(*args, **kwargs)
         self.out = nn.ModuleList([nn.Linear(self.dim, self.out_dim, bias = bias) for _ in range(self.h)])
 
+        self.identity = nn.Identity()
+
     def forward(self, q, k, v):
         mask = None
 
@@ -158,7 +160,7 @@ class MultiHeadAttention(nn.Module):
             out = self.out[i](scores[:, i, :, :])
             sum = out if i == 0 else sum + out
 
-        return sum
+        return self.identity(sum)
 
 
 class Attention(nn.Module):
