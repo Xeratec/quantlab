@@ -410,7 +410,8 @@ def integerize_network(net: nn.Module, key: str):
                                      export_layernorm_node=True,
                                      export_softmax_node=True,
                                      export_gelu_node=True,
-                                     export_div_node=True)
+                                     export_div_node=True,
+                                     export_unity_rqs=True)
     int_net = int_pass(net)
     return int_net
 

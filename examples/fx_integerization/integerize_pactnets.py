@@ -234,7 +234,7 @@ def get_input_channels(net : fx.GraphModule):
             return conv.in_channels
 
 # THIS IS WHERE THE BUSINESS HAPPENS!
-def integerize_network(net : nn.Module, key : str, fix_channels : bool, dory_harmonize : bool, word_align_channels : bool, requant_node : bool = False):
+def integerize_network(net : nn.Module, key : str, fix_channels : bool, dory_harmonize : bool, word_align_channels : bool, requant_node : bool = False, export_unity_rqs : bool = False):
     qu = _QUANT_UTILS[key]
     # All we need to do to integerize a fake-quantized network is to run the
     # IntegerizePACTNetPass on it! Afterwards, the ONNX graph it produces will
@@ -266,7 +266,7 @@ def integerize_network(net : nn.Module, key : str, fix_channels : bool, dory_har
             tcn_int = dory_harmonize_pass_tcn(tcn_int)
         return cnn_int, tcn_int
     else:
-        int_pass = IntegerizePACTNetPass(shape_in=in_shp, eps_in=qu.eps_in, D=qu.D, n_levels_in=qu.n_levels_in, fix_channel_numbers=fix_channels, requant_node=requant_node)
+        int_pass = IntegerizePACTNetPass(shape_in=in_shp, eps_in=qu.eps_in, D=qu.D, n_levels_in=qu.n_levels_in, fix_channel_numbers=fix_channels, requant_node=requant_node, export_unity_rqs=export_unity_rqs)
         int_net = int_pass(net)
         if fix_channels:
             # we may have modified the # of input channels so we need to adjust the
